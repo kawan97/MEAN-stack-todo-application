@@ -1,0 +1,12 @@
+<p>create page</p>
+<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+    <label for="title">title</label>
+    <input name="title" ngModel required #title="ngModel">
+    <label *ngIf="title.invalid && title.touched">required</label>
+
+    <label for="info">info</label>
+    <textarea name="info" ngModel required #info="ngModel"></textarea>
+    <label *ngIf="info.invalid && info.touched">required</label>
+    
+    <button>create</button>
+</form>

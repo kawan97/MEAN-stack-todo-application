@@ -1,0 +1,9 @@
+<p>home works!</p>
+
+<ul>
+    <li *ngFor="let post of allPosts$ | async"> 
+      {{ post.title }} posted by : {{post.user.userName}}
+    </li>
+   </ul>
+
+

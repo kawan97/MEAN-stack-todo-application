@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js"></script>
+<script  type="text/javascript">
+	var myLovleyToken="";
+	var myLovleyQRCode="";
+    var data = Qs.stringify({
+    
+      'grant_type': 'client_credentials',
+    
+      'client_id': 'boewa',
+    
+      'client_secret': '8a9d3923-6c4b-44a6-8632-0a4f602386f3'
+    
+    });
+    console.log(data)
+    var config = {
+    
+      method: 'post',
+    
+      url: 'https://fib.prod.fib.iq/auth/realms/fib-online-shop/protocol/openid-connect/token',
+    
+      headers: {
+    
+        'Content-Type': 'application/x-www-form-urlencoded'
+    
+      },
+    
+      data : data
+    
+    };
+    
+     
+    
+    axios(config)
+    
+    .then(function (response) {
+   		myLovleyToken=response.data;
+//      console.log(JSON.stringify(response.data));
+      console.log((response.data));
+		//Creation of a Payment
+		var paymentData = JSON.stringify({
+
+ 		 "monetaryValue": {
+
+		 "amount": "500.00",
+
+  	 	 "currency": "IQD"
+
+  	    	},
+
+ 	 	"description": "just i test it.",
+
+  		 "accountId": "85044cb8-2c21-4575-ae42-6d1b17b9512f"
+
+		});
+
+ 		
+		var paymentconfig = {
+
+  		   	method: 'post',
+
+ 			url: 'https://fib.prod.fib.iq/pay/payments',
+
+ 			 headers: {
+
+    		'Authorization': 'Bearer '+myLovleyToken['access_token'],
+
+   			 'Content-Type': 'application/json'
+
+ 			 },
+
+ 			 data : paymentData
+
+			};
+		
+			axios(paymentconfig)
+
+			.then(function (response) {
+			//res of QR code
+				myLovleyQRCode=response.data;
+				document.getElementById("myqrcode").src=myLovleyQRCode['qrCode'];
+
+  			console.log((response.data));
+
+			})
+
+			.catch(function (error) {
+
+ 			 console.log(error);
+
+			});
+
+    	//end of creation of a payment
+    })
+    
+    .catch(function (error) {
+    
+      console.log(error);
+    
+    });
+    
+     
+    
+    
+            ///////////
+
+
+
+function checkstatus(){
+	///////////
+
+
+	var url="https://fib.dev.azure.lawrence-spring.com/protected/v1/payments/"+myLovleyQRCode["paymentId"]+"/status"
+
+var checkstatusconfig = {
+
+	   method: 'get',
+
+   url: url,
+
+	headers: {
+
+  'Authorization': 'Bearer '+myLovleyToken['access_token'],
+
+
+	}
+
+  };
+
+  axios(checkstatusconfig)
+
+  .then(function (response) {
+
+
+	console.log((response.data));
+
+  })
+
+  .catch(function (error) {
+
+	console.log(error);
+
+  });
+
+
+	////////
+	}
+
+        
+    </script>
+</head>
+<body>
+   
+just for test ( use qs js)
+	  <img id="myqrcode" src="https://static.vecteezy.com/system/resources/previews/001/826/248/non_2x/progress-loading-bar-buffering-download-upload-and-loading-icon-vector.jpg" alt="QR" />
+	<button onclick="checkstatus()">
+		check status
+	</button>
+</body>
+
+</html>

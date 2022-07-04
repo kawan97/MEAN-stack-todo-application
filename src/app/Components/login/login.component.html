@@ -1,0 +1,16 @@
+<p>login page</p>
+<form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+    <label for="userName">username</label>
+    <input name="userName" ngModel required #userName="ngModel">
+    <label *ngIf="userName.invalid && userName.touched">required</label>
+
+    <label for="password">password</label>
+    <input name="password" ngModel required #password="ngModel">
+    <label *ngIf="password.invalid && password.touched">required</label>
+    <button>login</button>
+</form>
+<div *ngIf="user.auth">Content to render when condition is true.</div>
+
+<form  (ngSubmit)="onLogout()" >
+    <button>logout</button>
+</form>
